@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/vzaboraite/boolean-uk-final-group-project-server#readme",
   "dependencies": {
+    "@prisma/client": "^3.4.1",
     "cors": "^2.8.5",
     "dotenv": "^10.0.0",
     "express": "^4.17.1",
