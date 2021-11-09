@@ -11,53 +11,53 @@ datasource db {
   shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
 }
 
-model user {
-  id       Int        @id @default(autoincrement())
-  name     String     @db.VarChar(255)
-  profile  profile?
-  project  project[]
-  donation donation[]
+model User {
+  id        Int        @id @default(autoincrement())
+  name      String     @db.VarChar(255)
+  profile   Profile?
+  projects  Project[]
+  donations Donation[]
 }
 
-model profile {
+model Profile {
   id      Int    @id @default(autoincrement())
   email   String @db.VarChar(255)
   country String @db.VarChar(255)
-  user    user   @relation(fields: [userId], references: [id])
+  user    User   @relation(fields: [userId], references: [id])
   userId  Int
 }
 
-model project {
+model Project {
   id          Int                  @id @default(autoincrement())
   title       String               @db.VarChar(255)
   description String               @db.VarChar(255)
   goal        Int
-  user        user                 @relation(fields: [userId], references: [id])
+  user        User                 @relation(fields: [userId], references: [id])
   userId      Int
-  donation    donation[]
-  category    categoryOnProjects[]
+  donations   Donation[]
+  categories  CategoryOnProjects[]
 }
 
-model donation {
+model Donation {
   id        Int     @id @default(autoincrement())
   amount    Float
-  user      user    @relation(fields: [userId], references: [id])
+  user      User    @relation(fields: [userId], references: [id])
   userId    Int
-  project   project @relation(fields: [projectId], references: [id])
+  project   Project @relation(fields: [projectId], references: [id])
   projectId Int
 }
 
-model category {
-  id      Int                  @id @default(autoincrement())
-  name    String               @db.VarChar(255)
-  project categoryOnProjects[]
+model Category {
+  id       Int                  @id @default(autoincrement())
+  name     String               @db.VarChar(255)
+  projects CategoryOnProjects[]
 }
 
-model categoryOnProjects {
+model CategoryOnProjects {
   categoryId Int
-  category   category @relation(fields: [projectId], references: [id])
+  category   Category @relation(fields: [projectId], references: [id])
   projectId  Int
-  project    project  @relation(fields: [categoryId], references: [id])
+  project    Project  @relation(fields: [categoryId], references: [id])
 
   @@id([categoryId, projectId])
 }
