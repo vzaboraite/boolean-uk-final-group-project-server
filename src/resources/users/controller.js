@@ -3,10 +3,6 @@ const { prisma } = require("../../utils/db");
 const createUserAndProfile = async (req, res) => {
   const data = req.body;
 
-  console.log("data: ", data);
-
-  console.log("request: ", req);
-
   const { name, profile } = data;
   const { email, country } = profile;
 
