@@ -35,7 +35,36 @@ const getProjectById = async (req, res) => {
   }
 };
 
+const getAllProjectsByCategory = async (req, res) => {
+  const data = req.params.category;
+
+  try {
+    const result = await prisma.project.findMany({
+      where: {
+        categories: {
+          some: {
+            category: {
+              name: data,
+            },
+          },
+        },
+      },
+      include: {
+        user: true,
+        donations: true,
+        categories: true,
+      },
+    });
+    console.log(result);
+    res.json(result);
+  } catch (error) {
+    console.error({ error: error.message });
+    res.status(500).json({ error: error.message });
+  }
+};
+
 module.exports = {
   getAllProjects,
   getProjectById,
+  getAllProjectsByCategory,
 };
