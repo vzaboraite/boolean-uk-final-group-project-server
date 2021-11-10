@@ -9,6 +9,33 @@ const getAllProjects = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
+
+const getProjectById = async (req, res) => {
+  /* 
+  Resources:
+  unary plus operator => https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Unary_plus 
+  */
+  const targetId = +req.params.id;
+  try {
+    const result = await prisma.project.findFirst({
+      where: {
+        id: targetId,
+      },
+      include: {
+        user: true,
+        categories: true,
+        donations: true,
+      },
+    });
+    console.log(result);
+    res.json(result);
+  } catch (error) {
+    console.error({ error: error.message });
+    res.status(500).json({ error: error.message });
+  }
+};
+
 module.exports = {
   getAllProjects,
+  getProjectById,
 };
