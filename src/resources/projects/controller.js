@@ -2,7 +2,17 @@ const { prisma } = require("../../utils/db");
 
 const getAllProjects = async (req, res) => {
   try {
-    const result = await prisma.project.findMany();
+    const result = await prisma.project.findMany({
+      include: {
+        user: {
+          include: {
+            profile: true,
+          },
+        },
+        categories: true,
+        donations: true,
+      },
+    });
     res.json(result);
   } catch (error) {
     console.error({ error: error.message });
