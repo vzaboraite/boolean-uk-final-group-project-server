@@ -78,7 +78,7 @@ const getAllProjectsByCategory = async (req, res) => {
 };
 
 const createProject = async (req, res) => {
-  const { title, description, goal, userId, categories } = req.body;
+  const { title, description, goal, userId, categoryIds } = req.body;
 
   try {
     const result = await prisma.project.create({
@@ -92,12 +92,26 @@ const createProject = async (req, res) => {
           },
         },
         categories: {
-          create: categories,
+          create: categoryIds.map((id) => ({
+            category: {
+              connect: {
+                id: id,
+              },
+            },
+          })),
         },
       },
       include: {
-        user: true,
-        categories: true,
+        user: {
+          include: {
+            profile: true,
+          },
+        },
+        categories: {
+          include: {
+            category: true,
+          },
+        },
         donations: true,
       },
     });
