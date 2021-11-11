@@ -22,7 +22,11 @@ const getProjectById = async (req, res) => {
         id: targetId,
       },
       include: {
-        user: true,
+        user: {
+          include: {
+            profile: true,
+          },
+        },
         categories: true,
         donations: true,
       },
