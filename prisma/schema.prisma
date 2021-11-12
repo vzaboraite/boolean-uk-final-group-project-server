@@ -24,7 +24,7 @@ model Profile {
   email   String @db.VarChar(255)
   country String @db.VarChar(255)
   user    User   @relation(fields: [userId], references: [id])
-  userId  Int
+  userId  Int    @unique
 }
 
 model Project {
@@ -55,9 +55,9 @@ model Category {
 
 model CategoryOnProjects {
   categoryId Int
-  category   Category @relation(fields: [projectId], references: [id])
+  category   Category @relation(fields: [categoryId], references: [id])
   projectId  Int
-  project    Project  @relation(fields: [categoryId], references: [id])
+  project    Project  @relation(fields: [projectId], references: [id])
 
   @@id([categoryId, projectId])
 }

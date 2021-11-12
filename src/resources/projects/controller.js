@@ -77,8 +77,55 @@ const getAllProjectsByCategory = async (req, res) => {
   }
 };
 
+const createProject = async (req, res) => {
+  const { title, description, goal, userId, categoryIds } = req.body;
+
+  try {
+    const result = await prisma.project.create({
+      data: {
+        title,
+        description,
+        goal,
+        user: {
+          connect: {
+            id: parseInt(userId),
+          },
+        },
+        categories: {
+          create: categoryIds.map((id) => ({
+            category: {
+              connect: {
+                id: id,
+              },
+            },
+          })),
+        },
+      },
+      include: {
+        user: {
+          include: {
+            profile: true,
+          },
+        },
+        categories: {
+          include: {
+            category: true,
+          },
+        },
+        donations: true,
+      },
+    });
+
+    res.json(result);
+  } catch (error) {
+    console.error({ error: error.message });
+    res.status(500).json({ error: error.message });
+  }
+};
+
 module.exports = {
   getAllProjects,
   getProjectById,
   getAllProjectsByCategory,
+  createProject,
 };
