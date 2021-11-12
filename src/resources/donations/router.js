@@ -1,8 +1,10 @@
 const express = require("express");
-const { getAllDonations } = require("./controller");
+const { getAllDonations, getOneDonationByProjectId } = require("./controller");
 
 const router = express.Router();
 
 router.get("/", getAllDonations);
+
+router.get("/:projectId", getOneDonationByProjectId);
 
 module.exports = router;
