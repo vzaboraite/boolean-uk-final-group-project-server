@@ -58,7 +58,10 @@ const getAllProjectsByCategory = async (req, res) => {
         categories: {
           some: {
             category: {
-              name: data,
+              name: {
+                equals: data,
+                mode: "insensitive",
+              },
             },
           },
         },
