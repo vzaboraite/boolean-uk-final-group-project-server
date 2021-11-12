@@ -36,4 +36,38 @@ const getOneDonationByProjectId = async (req, res) => {
   }
 };
 
-module.exports = { getAllDonations, getOneDonationByProjectId };
+const createDonationForProject = async (req, res) => {
+  const { amount, userId, projectId } = req.body;
+
+  try {
+    const result = await prisma.donation.create({
+      data: {
+        amount: parseFloat(amount),
+        user: {
+          connect: {
+            id: parseInt(userId),
+          },
+        },
+        project: {
+          connect: {
+            id: parseInt(projectId),
+          },
+        },
+      },
+      include: {
+        user: true,
+        project: true,
+      },
+    });
+    res.json(result);
+  } catch (error) {
+    console.error({ error: error.message });
+    res.status(500).json({ error: error.message });
+  }
+};
+
+module.exports = {
+  getAllDonations,
+  getOneDonationByProjectId,
+  createDonationForProject,
+};
