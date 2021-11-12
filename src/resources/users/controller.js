@@ -37,4 +37,20 @@ const getAllUsers = async (req, res) => {
   }
 };
 
-module.exports = { createUserAndProfile, getAllUsers };
+const getUserById = async (req, res) => {
+  const id = req.params.id;
+  console.log("id: ", id);
+
+  try {
+    const userById = await prisma.user.findUnique({
+      where: {
+        id: +id,
+      },
+    });
+
+    res.json({ response: userById });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+module.exports = { createUserAndProfile, getAllUsers, getUserById };
