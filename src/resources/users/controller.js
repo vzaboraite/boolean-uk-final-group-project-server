@@ -29,7 +29,21 @@ const createUserAndProfile = async (req, res) => {
 
 const getAllUsers = async (req, res) => {
   try {
-    const result = await prisma.user.findMany();
+    const result = await prisma.user.findMany({
+      include: {
+        profile: true,
+        projects: {
+          include: {
+            categories: {
+              include: {
+                category: true,
+              },
+            },
+          },
+        },
+        donations: true,
+      },
+    });
     res.json(result);
   } catch (error) {
     console.error({ error: error.message });
@@ -46,10 +60,24 @@ const getUserById = async (req, res) => {
       where: {
         id: +id,
       },
+      include: {
+        profile: true,
+        projects: {
+          include: {
+            categories: {
+              include: {
+                category: true,
+              },
+            },
+          },
+        },
+        donations: true,
+      },
     });
 
     res.json({ response: userById });
   } catch (error) {
+    console.error({ error: error.message });
     res.status(500).json({ error: error.message });
   }
 };

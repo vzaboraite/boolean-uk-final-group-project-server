@@ -9,7 +9,11 @@ const getAllProjects = async (req, res) => {
             profile: true,
           },
         },
-        categories: true,
+        categories: {
+          include: {
+            category: true,
+          },
+        },
         donations: true,
       },
     });
@@ -37,7 +41,11 @@ const getProjectById = async (req, res) => {
             profile: true,
           },
         },
-        categories: true,
+        categories: {
+          include: {
+            category: true,
+          },
+        },
         donations: true,
       },
     });
@@ -126,9 +134,76 @@ const createProject = async (req, res) => {
   }
 };
 
+const updateProjectById = async (req, res) => {
+  console.log({ body: req.body });
+
+  const projectToUpdate = {
+    id: req.params.id,
+    ...req.body,
+  };
+  const { title, description, goal, categoryIds, userId } = projectToUpdate;
+
+  try {
+    const result = await prisma.project.update({
+      where: {
+        id: parseInt(req.params.id),
+      },
+      data: {
+        title: title,
+        description: description,
+        goal: goal,
+        user: {
+          connect: {
+            id: parseInt(userId),
+          },
+        },
+        categories: {
+          deleteMany: {
+            categoryId: { notIn: categoryIds },
+          },
+          connectOrCreate: categoryIds.map((id) => ({
+            where: {
+              categoryId_projectId: {
+                projectId: parseInt(req.params.id),
+                categoryId: parseInt(id),
+              },
+            },
+            create: {
+              category: {
+                connect: {
+                  id: id,
+                },
+              },
+            },
+          })),
+        },
+      },
+      include: {
+        categories: {
+          include: {
+            category: true,
+          },
+        },
+      },
+    });
+    const clearProject = {
+      ...result,
+      categories: result.categories.map((category) => {
+        console.log("INSIDE CATEGORY --> ", category);
+        return category.category;
+      }),
+    };
+    res.json(clearProject);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: error });
+  }
+};
+
 module.exports = {
   getAllProjects,
   getProjectById,
   getAllProjectsByCategory,
   createProject,
+  updateProjectById,
 };
