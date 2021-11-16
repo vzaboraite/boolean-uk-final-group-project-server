@@ -1,8 +1,10 @@
 const { prisma } = require("../../utils/db");
 
 const getAllProjects = async (req, res) => {
+  const { title, userName } = req.query;
+
   try {
-    const result = await prisma.project.findMany({
+    let queryOptions = {
       include: {
         user: {
           include: {
@@ -16,7 +18,28 @@ const getAllProjects = async (req, res) => {
         },
         donations: true,
       },
-    });
+    };
+
+    if (title) {
+      queryOptions.where = {
+        title: {
+          contains: title,
+        },
+      };
+    }
+
+    if (userName) {
+      queryOptions.where = {
+        user: {
+          name: {
+            contains: userName,
+          },
+        },
+      };
+    }
+
+    const result = await prisma.project.findMany(queryOptions);
+
     res.json(result);
   } catch (error) {
     console.error({ error: error.message });
