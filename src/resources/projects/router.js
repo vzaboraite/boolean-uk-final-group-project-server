@@ -6,6 +6,7 @@ const {
   getAllProjectsByCategory,
   createProject,
   updateProjectById,
+  deleteProjectById,
 } = require("./controller");
 
 const router = express.Router();
@@ -19,5 +20,7 @@ router.get("/:id", getProjectById);
 router.post("/", createProject);
 
 router.put("/:id", updateProjectById);
+
+router.delete("/:id", deleteProjectById);
 
 module.exports = router;

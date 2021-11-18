@@ -223,10 +223,47 @@ const updateProjectById = async (req, res) => {
   }
 };
 
+const deleteProjectById = async (req, res) => {
+  const { id } = req.params;
+  const targetProjectId = parseInt(id);
+
+  try {
+    const disconnectCategories = prisma.categoryOnProjects.deleteMany({
+      where: {
+        projectId: targetProjectId,
+      },
+    });
+
+    const disconnectDonations = prisma.donation.deleteMany({
+      where: {
+        projectId: targetProjectId,
+      },
+    });
+
+    const deleteProject = prisma.project.delete({
+      where: {
+        id: targetProjectId,
+      },
+    });
+
+    const result = await prisma.$transaction([
+      disconnectCategories,
+      disconnectDonations,
+      deleteProject,
+    ]);
+
+    res.json(result);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: error.message });
+  }
+};
+
 module.exports = {
   getAllProjects,
   getProjectById,
   getAllProjectsByCategory,
   createProject,
   updateProjectById,
+  deleteProjectById,
 };
