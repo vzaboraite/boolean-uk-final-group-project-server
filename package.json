@@ -7,6 +7,9 @@
     "start": "nodemon src/index.js",
     "prodstart": "node src/index.js"
   },
+  "prisma": {
+    "seed": "node prisma/seed.js"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/vzaboraite/boolean-uk-final-group-project-server.git"
