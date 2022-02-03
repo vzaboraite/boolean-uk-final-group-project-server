@@ -22,7 +22,7 @@ async function seed() {
       name: "Rick",
       profile: {
         create: {
-          email: "rick@fuckyou.com",
+          email: "rick@laravi.com",
           country: "BR",
         },
       },
@@ -34,7 +34,7 @@ async function seed() {
       name: "Morty",
       profile: {
         create: {
-          email: "morty@fuckyou.com",
+          email: "morty@laravi.com",
           country: "BR",
         },
       },
